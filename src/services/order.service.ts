@@ -18,11 +18,11 @@ class OrderService {
     this.orderRepository = orderRepository;
   }
 
-  private getNewOrderNumber = (order?: Order) => {
+  private takeNewOrderNumber = (order?: Order) => {
     return order ? order.orderNumber + 1 : 1;
   };
 
-  private getNewOrderStartDate = (orderDate: Date, lastOrder?: Order) => {
+  private calculateNewOrderStartDate = (orderDate: Date, lastOrder?: Order) => {
     if (!lastOrder) {
       return orderDate;
     }
@@ -35,8 +35,8 @@ class OrderService {
     return new Date(lastOrder.deliveryDate.getTime() + constants.DELIVERY_TIME);
   };
 
-  private getNewOrderDeliveryDate = (order: Order) => {
-    return new Date(order.startDate.getTime() + constants.PREPARATION_TIME);
+  private calculateNewOrderDeliveryDate = (startDate: Date) => {
+    return new Date(startDate.getTime() + constants.PREPARATION_TIME);
   };
 
   public save = async (order: OrderRequestDTO) => {
@@ -46,10 +46,10 @@ class OrderService {
     const newOrder = {
       customerName: order.customerName,
       orderDate: orderDate,
-      orderNumber: this.getNewOrderNumber(lastOrder),
-      startDate: this.getNewOrderStartDate(orderDate, lastOrder)
+      orderNumber: this.takeNewOrderNumber(lastOrder),
+      startDate: this.calculateNewOrderStartDate(orderDate, lastOrder)
     } as Order;
-    newOrder.deliveryDate = this.getNewOrderDeliveryDate(newOrder as Order);
+    newOrder.deliveryDate = this.calculateNewOrderDeliveryDate(newOrder.startDate);
 
     this.orderRepository.save(newOrder);
 
