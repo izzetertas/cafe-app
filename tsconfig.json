@@ -1,7 +1,10 @@
 {
   "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false // this one is for preventing the typescript  errors while using @Inject()
   },
   "include": ["src"],
   "exclude": ["node_modules"]
